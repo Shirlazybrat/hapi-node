@@ -1,3 +1,5 @@
+'use strict';
+
 // ========================Base setup ==================
 // Include Hapi
 const Hapi = require('hapi');
@@ -6,13 +8,11 @@ const Inert = require('inert');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const Joi = require('joi');
-// const mongoose = require('mongoose');
+
+const routes = require('./routes/routes.js'); //require routes.js
 
 //create server
 const server = new Hapi.Server();
-
-//connect to local mongoose database
-// mongoose.connect('mongodb://localhost/restdemo');
 
 // Importing `user` model from `models/user.js` file 
 const UserModel = require('./models/user'); 
@@ -22,7 +22,7 @@ server.connection({
 	port: 7002
 });
 
-
+server.route(routes); //add routes
 
 const options = {
     info: {
@@ -48,7 +48,6 @@ server.register([
             }
         });
     });
-
 
 // ======================== Start the sevrver ==================
 server.start(function(){
