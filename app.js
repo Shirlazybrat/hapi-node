@@ -7,7 +7,7 @@ const Vision = require('vision');
 const Inert = require('inert');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
-const Joi = require('joi');
+
 
 const routes = require('./routes/routes.js'); //require routes.js
 

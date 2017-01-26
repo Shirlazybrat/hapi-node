@@ -1,5 +1,7 @@
 'use strict';
 
+const Joi = require('joi');
+
 module.exports = function(){
   const user = [
     {
@@ -65,20 +67,44 @@ module.exports = function(){
     }
   },
 
+//Delete a user from the array
   {
-    method: 'POST',
-    path: '/user',
+    method: 'DELETE',
+    path: '/user/{id}',
     config: {
       handler: function(request, reply){
-        console.log(request.payload);
-        user.push({
-          name: request.payload.name,
-          age: request.payload.age
-        });
-        reply({message:'Successfully added the new user', responseCode:0});
+        if(user.length <= request.params.id){
+          return({message:'User does not exist', responseCode:1}).code(404);
+        }
+        user.splice(request.params.id, 1);
+        reply({message:'Successfully deleted ${request.params.id}',responseCode: 0});
+        }
+      } 
+    },
+
+    {
+      methdd: 'PUT',
+      path: '/user/{id}',
+      config: {
+        handler: function(request, reply){
+          user.push({
+            id: request.payload.id
+          });
+        },
+        validate: {
+          payload: {  //to validate payload
+            name: Joi.string(),
+            age: Joi.number()
+          },
+          params: {
+            id: Joi.number().integer().min(1).max(100)
+          },
+          query: {
+            //to validate query params
+          }
+        }
       }
     }
-  }
   ];
 }();
 
