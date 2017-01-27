@@ -1,6 +1,7 @@
 'use strict';
 
 const Joi = require('joi');
+const request = require('request');
 
 module.exports = function(){
   const url = "";
@@ -43,13 +44,16 @@ module.exports = function(){
     method: 'GET',
     path: '/user/{id}',
     config: {
+      description: 'Get a user by ID',
+      notes: 'Get a user by id',
+      tags: ['api']
+    },
       handler: function(request, reply){
         if (store.length <= request.params.id){
           return reply({message:"user does not exist", responseCode: 1}).code(404);
         }
         reply({'user':user[request.params.id], 'responseCode':0})
       }
-    }
   },
 
 //Post new user into dataset
@@ -80,6 +84,17 @@ module.exports = function(){
     method: 'DELETE',
     path: '/user/{id}',
     config: {
+      description: 'Get a user by ID',
+      notes: 'Get a user by id',
+      tags: ['api'],
+       validate: {
+        payload: {
+          //Both name and age are required fields
+          name: Joi.string(),
+          age: Joi.number()
+        }
+      }
+    },
       handler: function(request, reply){
         if(user.length <= request.params.id){
           return({message:'User does not exist', responseCode:1}).code(404);
@@ -88,31 +103,6 @@ module.exports = function(){
         reply({message:'Successfully deleted ${request.params.id}',responseCode: 0});
         }
       } 
-    },
-
-    {
-      method: 'PUT',
-      path: '/user/{id}',
-      config: {
-        handler: function(request, reply){
-          user.push({
-            id: request.payload.id
-          });
-        },
-        validate: {
-          payload: {  //to validate payload
-            name: Joi.string(),
-            age: Joi.number()
-          },
-          params: {
-            id: Joi.number().integer().min(1).max(100)
-          },
-          query: {
-            //to validate query params
-          }
-        }
-      }
-    }
   ];
 }();
 
