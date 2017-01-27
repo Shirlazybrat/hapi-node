@@ -3,6 +3,7 @@
 const Joi = require('joi');
 
 module.exports = function(){
+  const url = "";
   const user = [
     {
       name: 'Shirlette',
@@ -56,14 +57,21 @@ module.exports = function(){
     method: 'POST',
     path: '/user/',
     config: {
-      handler: function(request,reply){
-        console.log(request.payload);
-        user.push({
-          name: request.payload.name,
-          age: request.payload.age
-        });
-        reply({message:'Successfully added the new user', responseCode:0});
+      //tags to enable swagger to document API
+      tags: ['api'],
+      description: 'Add a new user',
+      notes: 'Add a new user',
+      //Use joi plugin to validate request
+      validate: {
+        payload: {
+          //Both name and age are required fields
+          name: Joi.string(),
+          age: Joi.number()
+        }
       }
+      },
+      handler: function(request,reply){
+      reply({message:'Successfully added the new user', responseCode:0});
     }
   },
 
@@ -83,7 +91,7 @@ module.exports = function(){
     },
 
     {
-      methdd: 'PUT',
+      method: 'PUT',
       path: '/user/{id}',
       config: {
         handler: function(request, reply){
@@ -108,39 +116,3 @@ module.exports = function(){
   ];
 }();
 
-// server.route({ 
-// method: 'POST', 
-// path: '/api/user', 
-// config: { // "tags" enable swagger to document API 
-// 	tags: ['api'], 
-// 	description: 'Save user data', 
-// 	notes: 'Save user data', 
-// 	// We use Joi plugin to validate request 
-// 	validate: { 
-// 		payload: { 
-// 		// Both name and age are required fields 
-// 		name: Joi.string().required(), 
-// 		age: Joi.number().required() 
-// 		} 
-// 	} 
-// }, handler: function (request, reply) { 
-// 	// Create mongodb user object to save it into database 
-// 	var user = new UserModel(request.payload); 
-// 	// Call save methods to save data into database 
-// 	// and pass callback methods to handle error 
-// 	user.save(function (error) { 
-// 		if (error) {
-// 		 reply({ 
-// 		 	statusCode: 503, 
-// 		 	message: error 
-// 		 }); 
-// 		} 
-// 		else {
-// 		 reply({ 
-// 		 	statusCode: 201, 
-// 		 	message: 'User Saved Successfully' 
-// 		 }); 
-// 		} 
-// 	}); 
-// } 
-// }); 
